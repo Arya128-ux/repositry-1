@@ -7,7 +7,7 @@ on:
   push:
     branches: [ main ]
   schedule:
-    - cron: '32 11 * 
+    - Monday 3:55 AM
 
 jobs:* 1'
   Scan-Build:
