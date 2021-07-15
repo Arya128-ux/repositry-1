@@ -12,8 +12,8 @@ on:
 
 jobs:
   xanitizer-security-analysis:
-    # Xanitizer runs on ubuntu-latest and windows 10.
-    runs-on: windows 10
+    # Xanitizer runs on and windows-latest.
+    runs-on: windows-latest
 
     steps:
       # Check out the repository
