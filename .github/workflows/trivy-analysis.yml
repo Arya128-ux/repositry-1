@@ -2,3 +2,5 @@
 # Scan is an open-source secure scan
 
     runs-on: ubuntu-lates
+
+on
