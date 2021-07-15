@@ -1,6 +1,6 @@
-# This workflow integrates a collection of open source static analysis tools
-# with GitHub code scanning. For documentation, or to provide feedback, visit
-# https://github.com/github/ossar-action
+# This workflow integrates Scan with GitHub's code scanning feature
+# Scan is a free open-source security tool for modern DevOps teams from ShiftLeft
+# Visit https://slscan.io/en/latest/integrations/code-scan for help
 name: OSSAR
 
 on:
@@ -10,33 +10,33 @@ on:
     # The branches below must be a subset of the branches above
     branches: [ main ]
   schedule:
-    - cron: '39 3 * * 4'
+    - cron: '32 11 * * 1'
 
 jobs:
-  OSSAR-Scan:
-    # OSSAR runs on windows-latest.
-    # ubuntu-latest and macos-latest support coming soon
-    runs-on: windows-latest
+  Scan-Build:
+    # Scan runs on ubuntu, mac and windows
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    # Instructions
+    # 1. Setup JDK, Node.js, Python etc depending on your project type
+    # 2. Compile or build the project before invoking scan
+    #    Example: mvn compile, or npm install or pip install goes here
+    # 3. Invoke Scan with the github token. Leave the workspace empty to use relative url
 
+    - name: Perform Scan
+      uses: ShiftLeftSecurity/scan-action@master
+      env:
+        WORKSPACE: ""
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SCAN_AUTO_BUILD: true
+      with:
+        output: reports
+        # Scan auto-detects the languages in your project. To override uncomment the below variable and set the type
+        # type: credscan,java
+        # type: python
 
-
-    # Ensure a compatible version of dotnet is installed.
-    # The [Microsoft Security Code Analysis CLI](https://aka.ms/mscadocs) is built with dotnet v3.1.201.
-    # A version greater than or equal to v3.1.201 of dotnet must be installed on the agent in order to run this action.
-    # GitHub hosted runners already have a compatible version of dotnet installed and this step may be skipped.
-    # For self-hosted runners, ensure dotnet version 3.1.201 or later is installed by including this action:
-    # - name: Install .NET
-    #   uses: actions/setup-dotnet@v1
-    #   with:
-    #     dotnet-version: '3.1.x'
-
-      # Run open source static analysis tools
-    - name: Run OSSAR
-      uses: github/ossar-action@v1
-      id: ossar
-
-      # Upload results to the Security tab
-    - name: Upload OSSAR results
+    - name: Upload report
       uses: github/codeql-action/upload-sarif@v1
       with:
-        sarif_file: ${{ steps.ossar.outputs.sarifFile }}
+        sarif_file: reports
