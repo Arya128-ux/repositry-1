@@ -1,4 +1,4 @@
 # This workflow integrates Scan with GitHub's code scanning feature
-# Scan is a ee open-source secur
+# Scan is an open-source secure scan
 
     runs-on: ubuntu-lates
