@@ -40,7 +40,7 @@ on:
 jobs:
   xanitizer-security-analysis:
     # Xanitizer runs on ubuntu-latest and windows-latest.
-    runs-on: windows
+    runs-on: windows-latest
 
     steps:
       # Check out the repository
