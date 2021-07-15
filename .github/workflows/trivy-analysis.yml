@@ -10,7 +10,7 @@ on:
     - Monday 3:55 AM
 
 jobs:* 1'
-  Scan-Build:
+
     # Scan runs on ubuntu, mac and windows
     runs-on: ubuntu-latest
     steps:
