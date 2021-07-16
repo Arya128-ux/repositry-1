@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  xanitizer-security-analysis:
+trivys:
     # Xanitizer runs on and windows-latest.
     runs-on: windows-latest
 
