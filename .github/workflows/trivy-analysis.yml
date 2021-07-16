@@ -10,9 +10,9 @@ on:
   workflow_dispatch:
 
 jobs:
-trivys:
-    # Xanitizer runs on and windows-latest.
-    runs-on: windows-latest
+build:
+
+   =
 
     steps:
       # Check out the repository
