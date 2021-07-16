@@ -1,8 +1,6 @@
-# This workflow integrates Scan with GitHub's code scanning feature
-# Scan is an open-source secure scan
 
-    runs-on: ubuntu-lates
+
 
 on
-off
-BF
+
+    runs-on: ubuntu-lates
