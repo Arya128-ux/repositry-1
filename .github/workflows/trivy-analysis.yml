@@ -1,4 +1,5 @@
 
+name: 
 
 on:
   push:
@@ -10,9 +11,9 @@ on:
   workflow_dispatch:
 
 jobs:
-build:
-
-   =
+  xanitizer-security-analysis:
+    # Xanitizer runs on and windows-latest.
+    runs-on: windows-latest
 
     steps:
       # Check out the repository
