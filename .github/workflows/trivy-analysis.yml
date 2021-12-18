@@ -22,13 +22,7 @@ jobs:
 
      
 
-      # Install all dependent libraries for JavaScript/TypeScript projects, e.g. via npm
-      # Please adapt to run `npm install` in the correct directories.
-      # Please adapt, if your project uses another package manager for getting JavaScript libraries.
-      # Please comment out, if your project does not use a package manager for getting JavaScript libraries.
-      - name: Install JavaScript libraries
-        run: install
-
+      
       # Run the security analysis with default settings
       - name: Xanitizer Security Analysis
         uses: RIGS-IT/xanitizer-action@v1
