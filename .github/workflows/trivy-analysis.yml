@@ -1,0 +1,48 @@
+
+name: 
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '25 12 * * 4'
+  workflow_dispatch:
+
+jobs:
+  xanitizer-security-analysis:
+    # Xanitizer runs on and windows-latest.
+    runs-on: windows-latest
+
+    steps:
+      # Check out the repository
+      - name: Checkout
+        uses: actions/checkout@v2
+
+     
+
+      # Install all dependent libraries for JavaScript/TypeScript projects, e.g. via npm
+      # Please adapt to run `npm install` in the correct directories.
+      # Please adapt, if your project uses another package manager for getting JavaScript libraries.
+      # Please comment out, if your project does not use a package manager for getting JavaScript libraries.
+      - name: Install JavaScript libraries
+        run: install
+
+      # Run the security analysis with default settings
+      - name: Xanitizer Security Analysis
+        uses: RIGS-IT/xanitizer-action@v1
+        with:
+          license: ${{ secrets.XANITIZER_LICENSE }}
+
+      # Archiving the findings list reports
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Xanitizer-Reports
+          path: |
+            *-Findings-List.pdf
+            *-Findings-List.sarif
+      # Uploads the findings into the GitHub code scanning alert section using the upload-sarif action
+      - uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: reports
