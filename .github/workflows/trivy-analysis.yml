@@ -1,36 +1,48 @@
-name: build
+
+name: 
 
 on:
   push:
     branches: [ main ]
   pull_request:
-    # The branches below must be a subset of the branches above
     branches: [ main ]
   schedule:
-    - cron: '43 1 * * 3'
+    - cron: '25 12 * * 4'
+  workflow_dispatch:
 
 jobs:
-  build:
-    name: Build
-    runs-on: "ubuntu-18.04"
+  xanitizer-security-analysis:
+    # Xanitizer runs on and windows-latest.
+    runs-on: windows-latest
+
     steps:
-      - name: Checkout code
+      # Check out the repository
+      - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Build an image from Dockerfile
-        run: |
-          docker build -t docker.io/my-organization/my-app:${{ github.sha }} .
+     
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'docker.io/my-organization/my-app:${{ github.sha }}'
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
+      # Install all dependent libraries for JavaScript/TypeScript projects, e.g. via npm
+      # Please adapt to run `npm install` in the correct directories.
+      # Please adapt, if your project uses another package manager for getting JavaScript libraries.
+      # Please comment out, if your project does not use a package manager for getting JavaScript libraries.
+      - name: Install JavaScript libraries
+        run: install
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v1
+      # Run the security analysis with default settings
+      - name: Xanitizer Security Analysis
+        uses: RIGS-IT/xanitizer-action@v1
         with:
-          sarif_file: 'trivy-results.sarif'
+          license: ${{ secrets.XANITIZER_LICENSE }}
+
+      # Archiving the findings list reports
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Xanitizer-Reports
+          path: |
+            *-Findings-List.pdf
+            *-Findings-List.sarif
+      # Uploads the findings into the GitHub code scanning alert section using the upload-sarif action
+      - uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: reports
