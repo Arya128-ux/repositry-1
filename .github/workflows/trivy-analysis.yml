@@ -1,48 +1,43 @@
 
-name: 
+# This workflow integrates Scan with GitHub's code scanning feature
+# Scan is a free open-source security tool for modern DevOps teams from ShiftLeft
+# Visit https://slscan.io/en/latest/integrations/code-scan for help
+name: Synopsys Intelligent Security Scan
 
 on:
   push:
     branches: [ main ]
   pull_request:
+    # The branches below must be a subset of the branches above
     branches: [ main ]
   schedule:
-    - cron: '25 12 * * 4'
-  workflow_dispatch:
+    - cron: '32 11 * * 1'
 
 jobs:
-  xanitizer-security-analysis:
-    # Xanitizer runs on and windows-latest.
-    runs-on: windows-latest
-
+  Scan-Build:
+    # Scan runs on ubuntu, mac and windows
+    runs-on: ubuntu-latest
     steps:
-      # Check out the repository
-      - name: Checkout
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v2
+    # Instructions
+    # 1. Setup JDK, Node.js, Python etc depending on your project type
+    # 2. Compile or build the project before invoking scan
+    #    Example: mvn compile, or npm install or pip install goes here
+    # 3. Invoke Scan with the github token. Leave the workspace empty to use relative url
 
-     
+    - name: Perform Scan
+      uses: ShiftLeftSecurity/scan-action@master
+      env:
+        WORKSPACE: ""
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SCAN_AUTO_BUILD: true
+      with:
+        output: reports
+        # Scan auto-detects the languages in your project. To override uncomment the below variable and set the type
+        # type: credscan,java
+        # type: python
 
-      # Install all dependent libraries for JavaScript/TypeScript projects, e.g. via npm
-      # Please adapt to run `npm install` in the correct directories.
-      # Please adapt, if your project uses another package manager for getting JavaScript libraries.
-      # Please comment out, if your project does not use a package manager for getting JavaScript libraries.
-      - name: Install JavaScript libraries
-        run: install
-
-      # Run the security analysis with default settings
-      - name: Xanitizer Security Analysis
-        uses: RIGS-IT/xanitizer-action@v1
-        with:
-          license: ${{ secrets.XANITIZER_LICENSE }}
-
-      # Archiving the findings list reports
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Xanitizer-Reports
-          path: |
-            *-Findings-List.pdf
-            *-Findings-List.sarif
-      # Uploads the findings into the GitHub code scanning alert section using the upload-sarif action
-      - uses: github/codeql-action/upload-sarif@v1
-        with:
-          sarif_file: reports
+    - name: Upload report
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: reports
